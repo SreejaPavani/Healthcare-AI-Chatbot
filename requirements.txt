@@ -1,0 +1,11 @@
+streamlit
+sentence-transformers
+scikit-learn
+torch
+SpeechRecognition
+torchvision
+pandas
+numpy
+matplotlib
+nltk
+jupyter
