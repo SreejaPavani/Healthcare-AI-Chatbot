@@ -524,8 +524,65 @@ section[data-testid="stSidebar"] {
 
 }
 
+
+/* =========================
+   AUTHENTICATION PAGE
+========================= */
+.auth-page { min-height:72vh; display:flex; align-items:center; justify-content:center; padding:35px 15px; }
+.auth-card { width:100%; max-width:520px; background:rgba(255,255,255,0.98); border:1px solid #d8e9ee; border-radius:24px; padding:42px 38px; text-align:center; box-shadow:0 18px 50px rgba(20,90,110,0.12); }
+.auth-icon { width:76px; height:76px; margin:0 auto 18px auto; border-radius:50%; background:#e7f6f8; display:flex; align-items:center; justify-content:center; font-size:38px; }
+.auth-title { color:#203f4d; font-size:30px; font-weight:800; margin-bottom:10px; }
+.auth-subtitle { color:#607b86; font-size:15px; line-height:1.6; margin-bottom:24px; }
+.auth-note { color:#78909c; font-size:12px; line-height:1.5; margin-top:18px; }
+.auth-user { background:#eaf8f3; border:1px solid #c8e8dd; color:#237a70; border-radius:12px; padding:9px 12px; font-size:13px; margin-bottom:14px; }
+
 </style>
 """)
+
+
+# ============================================================
+# AUTHENTICATION
+# ============================================================
+
+# Native Streamlit OpenID Connect authentication. Google credentials
+# are stored in Streamlit Secrets, never in this source file.
+
+def show_login_page():
+
+    st.html("""
+    <div class="auth-page">
+        <div class="auth-card">
+            <div class="auth-icon">🏥</div>
+            <div class="auth-title">Healthcare AI Chatbot</div>
+            <div class="auth-subtitle">
+                Welcome to your AI-powered healthcare information assistant.<br>
+                Please sign in with your Google account to continue.
+            </div>
+        </div>
+    </div>
+    """)
+
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.button(
+            "🔐 Continue with Google",
+            use_container_width=True,
+            type="primary",
+            key="google_login",
+            on_click=st.login
+        )
+
+    st.html("""
+    <div class="auth-note" style="text-align:center;">
+        Your Google account is used only for authentication.<br>
+        Do not enter passwords or medical credentials into this chatbot.
+    </div>
+    """)
+
+
+if not getattr(st.user, "is_logged_in", False):
+    show_login_page()
+    st.stop()
 
 
 # ============================================================
@@ -552,6 +609,23 @@ with st.sidebar:
         🏥 Healthcare Chatbot
     </div>
     """)
+
+    user_name = getattr(st.user, "name", "User")
+    user_email = getattr(st.user, "email", "")
+
+    st.html(f"""
+    <div class="auth-user">
+        👤 <b>{user_name}</b><br>
+        <span style="font-size:11px;">{user_email}</span>
+    </div>
+    """)
+
+    st.button(
+        "🚪 Log out",
+        use_container_width=True,
+        key="logout_button",
+        on_click=st.logout
+    )
 
     st.html("""
     <div class="sidebar-title">
